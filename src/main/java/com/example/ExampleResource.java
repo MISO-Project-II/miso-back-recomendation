@@ -1,16 +1,15 @@
 package com.example;
 
-import com.example.model.Item;
-import com.example.model.User;
-import com.example.model.UserItem;
-import com.example.repository.ItemRepository;
-import com.example.repository.UserItemRepository;
-import com.example.repository.UserRepository;
-import io.agroal.api.AgroalDataSource;
-import io.quarkus.agroal.DataSource;
-import org.apache.commons.dbutils.DbUtils;
-import org.apache.commons.dbutils.QueryRunner;
-import org.apache.hadoop.ipc.Server;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.impl.common.FastByIDMap;
 import org.apache.mahout.cf.taste.impl.model.GenericDataModel;
@@ -22,14 +21,11 @@ import org.apache.mahout.cf.taste.model.PreferenceArray;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.jboss.logging.Logger;
 
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import com.example.model.Item;
+import com.example.model.User;
+import com.example.repository.ItemRepository;
+import com.example.repository.UserItemRepository;
+import com.example.repository.UserRepository;
 
 @Path("/hello")
 public class ExampleResource {
@@ -42,10 +38,6 @@ public class ExampleResource {
 	UserRepository userRepository;
 	@Inject
 	Logger log;
-
-
-
-
 
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
@@ -83,7 +75,7 @@ public class ExampleResource {
 			userItemRepository.findByUser(user).forEach(userItem -> {
 				userItem.getItems().forEach(item -> {
 					userPreferences.setUserID(i,userItem.getUser().getIdUser());
-					userPreferences.setItemID(i,userItem.getUserItemId());
+					userPreferences.setItemID(i,userItem.getPkUserItem());
 					userPreferences.setValue(i,1);
 				});
 			});
